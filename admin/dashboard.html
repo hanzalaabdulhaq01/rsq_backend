@@ -234,6 +234,7 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       overflow: hidden;
+      margin-bottom: 20px;
     }
 
     .table-header {
@@ -278,23 +279,18 @@
       font-weight: 500;
     }
 
-    .status-active { background: rgba(34,197,94,0.15); color: var(--success); }
+    .status-available { background: rgba(34,197,94,0.15); color: var(--success); }
     .status-busy { background: rgba(245,158,11,0.15); color: var(--warning); }
     .status-offline { background: rgba(148,163,184,0.15); color: var(--text-muted); }
-
-    .role-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .role-admin { background: rgba(220,38,38,0.15); color: var(--primary); }
-    .role-driver { background: rgba(59,130,246,0.15); color: var(--info); }
-    .role-paramedic { background: rgba(34,197,94,0.15); color: var(--success); }
-    .role-user { background: rgba(148,163,184,0.15); color: var(--text-muted); }
+    .status-maintenance { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .status-created { background: rgba(59,130,246,0.15); color: var(--info); }
+    .status-dispatching { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .status-in_trip { background: rgba(34,197,94,0.15); color: var(--success); }
+    .status-completed { background: rgba(148,163,184,0.15); color: var(--text-muted); }
+    .status-cancelled { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .status-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .status-verified { background: rgba(34,197,94,0.15); color: var(--success); }
+    .status-rejected { background: rgba(239,68,68,0.15); color: #ef4444; }
 
     .empty-state {
       text-align: center;
@@ -306,7 +302,7 @@
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
+  <!-- Sidebar — Items match ResQLink project document requirements -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="icon">+</div>
@@ -318,19 +314,16 @@
       <a class="nav-item active"><span class="nav-icon">&#9632;</span> Dashboard</a>
 
       <div class="nav-section">Management</div>
-      <a class="nav-item" id="navUsers"><span class="nav-icon">&#9679;</span> Users</a>
       <a class="nav-item"><span class="nav-icon">&#9670;</span> Ambulances</a>
-      <a class="nav-item"><span class="nav-icon">&#9733;</span> Hospitals</a>
-      <a class="nav-item"><span class="nav-icon">&#9998;</span> Paramedics</a>
+      <a class="nav-item"><span class="nav-icon">&#9998;</span> Paramedic Profiles</a>
 
       <div class="nav-section">Operations</div>
       <a class="nav-item"><span class="nav-icon">&#10148;</span> Ride Requests</a>
       <a class="nav-item"><span class="nav-icon">&#9737;</span> Live Tracking</a>
       <a class="nav-item"><span class="nav-icon">&#9993;</span> Dispatch</a>
 
-      <div class="nav-section">Reports</div>
+      <div class="nav-section">Monitoring</div>
       <a class="nav-item"><span class="nav-icon">&#9776;</span> Driver Performance</a>
-      <a class="nav-item"><span class="nav-icon">&#8942;</span> Admin Logs</a>
     </nav>
 
     <div class="sidebar-footer">
@@ -357,47 +350,68 @@
       <div class="badge badge-live"><span class="dot"></span> System Online</div>
     </div>
 
-    <!-- Stats -->
+    <!-- Stats — from document: active ambulances, pending requests, driver performance, paramedics -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="label">Total Users</div>
-        <div class="value" id="statUsers">--</div>
-        <div class="change up">Registered accounts</div>
+        <div class="label">Active Ambulances</div>
+        <div class="value" id="statAmbulances">--</div>
+        <div class="change up">Currently available</div>
       </div>
       <div class="stat-card">
-        <div class="label">Active Drivers</div>
-        <div class="value" id="statDrivers">--</div>
-        <div class="change up">On duty now</div>
+        <div class="label">Pending Requests</div>
+        <div class="value" id="statPending">--</div>
+        <div class="change">Awaiting dispatch</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Active Rides</div>
+        <div class="value" id="statActiveRides">--</div>
+        <div class="change up">In progress now</div>
       </div>
       <div class="stat-card">
         <div class="label">Paramedics</div>
         <div class="value" id="statParamedics">--</div>
-        <div class="change">Available</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Ride Requests</div>
-        <div class="value" id="statRides">--</div>
-        <div class="change">Today</div>
+        <div class="change">Verified profiles</div>
       </div>
     </div>
 
-    <!-- Recent Users Table -->
+    <!-- Active Ambulances Table — document: "Tracks active ambulances" -->
     <div class="table-section">
       <div class="table-header">
-        <h3>Recent Users</h3>
+        <h3>Registered Ambulances</h3>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email / Phone</th>
-            <th>Role</th>
-            <th>Verified</th>
-            <th>Joined</th>
+            <th>Registration</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Organization</th>
+            <th>Location</th>
           </tr>
         </thead>
-        <tbody id="usersTable">
-          <tr><td colspan="5" class="empty-state"><p>Loading users...</p></td></tr>
+        <tbody id="ambulancesTable">
+          <tr><td colspan="5" class="empty-state"><p>Loading ambulances...</p></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pending Ride Requests Table — document: "pending requests, incoming emergency requests" -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Pending Ride Requests</h3>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Requested By</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Pickup Location</th>
+            <th>Requested At</th>
+          </tr>
+        </thead>
+        <tbody id="ridesTable">
+          <tr><td colspan="5" class="empty-state"><p>Loading requests...</p></td></tr>
         </tbody>
       </table>
     </div>
@@ -425,7 +439,7 @@
       window.location.href = 'login.html';
     });
 
-    // Fetch helpers
+    // Fetch helper
     async function apiFetch(path) {
       const res = await fetch(`${API}${path}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -438,36 +452,65 @@
       return res.json();
     }
 
+    function statusClass(status) {
+      return 'status-' + status.toLowerCase().replace(/_/g, '_');
+    }
+
     // Load dashboard data
     async function loadDashboard() {
       try {
-        const users = await apiFetch('/users');
-        if (!users) return;
+        // Fetch ambulances, ride requests, and paramedic profiles in parallel
+        const [ambulances, rides, paramedics] = await Promise.all([
+          apiFetch('/ambulances'),
+          apiFetch('/ride-requests'),
+          apiFetch('/paramedic-profiles'),
+        ]);
+
+        if (!ambulances) return;
 
         // Stats
-        document.getElementById('statUsers').textContent = users.length;
-        document.getElementById('statDrivers').textContent =
-          users.filter(u => u.role === 'DRIVER' && u.isActive).length;
-        document.getElementById('statParamedics').textContent =
-          users.filter(u => u.role === 'PARAMEDIC').length;
-        document.getElementById('statRides').textContent = '0';
+        const availableAmbulances = ambulances.filter(a => a.status === 'AVAILABLE');
+        const pendingRides = rides ? rides.filter(r => ['CREATED', 'DISPATCHING', 'WAITING_DRIVER_ACCEPT'].includes(r.status)) : [];
+        const activeRides = rides ? rides.filter(r => ['DRIVER_ACCEPTED', 'DRIVER_ARRIVED', 'IN_TRIP'].includes(r.status)) : [];
+        const verifiedParamedics = paramedics ? paramedics.filter(p => p.status === 'VERIFIED') : [];
 
-        // Table
-        const tbody = document.getElementById('usersTable');
-        if (users.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><p>No users found</p></td></tr>';
-          return;
+        document.getElementById('statAmbulances').textContent = availableAmbulances.length;
+        document.getElementById('statPending').textContent = pendingRides.length;
+        document.getElementById('statActiveRides').textContent = activeRides.length;
+        document.getElementById('statParamedics').textContent = verifiedParamedics.length;
+
+        // Ambulances table
+        const ambTbody = document.getElementById('ambulancesTable');
+        if (ambulances.length === 0) {
+          ambTbody.innerHTML = '<tr><td colspan="5" class="empty-state"><p>No ambulances registered</p></td></tr>';
+        } else {
+          ambTbody.innerHTML = ambulances.slice(0, 10).map(a => `
+            <tr>
+              <td>${a.registrationNumber || '—'}</td>
+              <td>${a.type}</td>
+              <td><span class="status-badge status-${a.status.toLowerCase()}">${a.status}</span></td>
+              <td>${a.organization ? a.organization.name : '—'}</td>
+              <td>${a.currentLat ? a.currentLat.toFixed(4) + ', ' + a.currentLng.toFixed(4) : 'No GPS'}</td>
+            </tr>
+          `).join('');
         }
 
-        tbody.innerHTML = users.slice(0, 10).map(u => `
-          <tr>
-            <td>${u.name}</td>
-            <td>${u.email || u.phone || '—'}</td>
-            <td><span class="role-badge role-${u.role.toLowerCase()}">${u.role}</span></td>
-            <td><span class="status-badge ${u.verified ? 'status-active' : 'status-offline'}">${u.verified ? 'Yes' : 'No'}</span></td>
-            <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-          </tr>
-        `).join('');
+        // Rides table — show pending + active
+        const rideTbody = document.getElementById('ridesTable');
+        const displayRides = [...pendingRides, ...activeRides];
+        if (displayRides.length === 0) {
+          rideTbody.innerHTML = '<tr><td colspan="5" class="empty-state"><p>No pending requests</p></td></tr>';
+        } else {
+          rideTbody.innerHTML = displayRides.slice(0, 10).map(r => `
+            <tr>
+              <td>${r.user ? r.user.name : '—'}</td>
+              <td>${r.ambulanceType}</td>
+              <td><span class="status-badge status-${r.status.toLowerCase()}">${r.status.replace(/_/g, ' ')}</span></td>
+              <td>${r.pickupLat.toFixed(4)}, ${r.pickupLng.toFixed(4)}</td>
+              <td>${new Date(r.requestedAt).toLocaleString()}</td>
+            </tr>
+          `).join('');
+        }
       } catch (err) {
         console.error('Dashboard load error:', err);
       }
