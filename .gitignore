@@ -7,6 +7,11 @@
 node_modules/
 dist/
 
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.production
+
 # Compiled Java class files
 *.class
 
