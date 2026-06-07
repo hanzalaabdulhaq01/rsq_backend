@@ -55,8 +55,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Update user (Admin only)' })
+  @ApiOperation({ summary: 'Update user (Admin can update any user, users can update themselves)' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
