@@ -90,6 +90,14 @@ model User {
   locationLat Float?
   locationLng Float?
 
+  // User preferences
+  language String @default("en")
+  notificationPreferences Json?
+
+  // Password reset
+  resetCode String?
+  resetCodeExpiresAt DateTime?
+
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())

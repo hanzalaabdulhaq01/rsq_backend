@@ -92,7 +92,7 @@ export class PasswordResetService {
     await this.prisma.user.update({
       where: { id: user.id },
       data: {
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         resetCode: null,
         resetCodeExpiresAt: null,
       },
@@ -125,7 +125,7 @@ export class PasswordResetService {
     // Verify current password
     const isPasswordValid = await bcrypt.compare(
       dto.currentPassword,
-      user.password,
+      user.passwordHash,
     );
 
     if (!isPasswordValid) {
@@ -137,7 +137,7 @@ export class PasswordResetService {
 
     await this.prisma.user.update({
       where: { id: userId },
-      data: { password: hashedPassword },
+      data: { passwordHash: hashedPassword },
     });
 
     return {

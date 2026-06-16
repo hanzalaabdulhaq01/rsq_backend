@@ -9,9 +9,9 @@ export class EmailService {
   private brevoSenderName: string;
 
   constructor(private configService: ConfigService) {
-    this.brevoApiKey = this.configService.get('BREVO_API_KEY');
-    this.brevoSenderEmail = this.configService.get('BREVO_SENDER_EMAIL');
-    this.brevoSenderName = this.configService.get('BREVO_SENDER_NAME');
+    this.brevoApiKey = this.configService.get<string>('BREVO_API_KEY') || '';
+    this.brevoSenderEmail = this.configService.get<string>('BREVO_SENDER_EMAIL') || 'noreply@resqlink.com';
+    this.brevoSenderName = this.configService.get<string>('BREVO_SENDER_NAME') || 'ResqLink';
 
     if (!this.brevoApiKey) {
       throw new Error('BREVO_API_KEY is not configured in environment variables');
