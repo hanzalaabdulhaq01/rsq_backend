@@ -131,6 +131,7 @@ export class DispatchService {
         where: {
           role: Role.DRIVER,
           isActive: true,
+          ...(data.ambulanceType === AmbulanceType.BASIC ? { pairedParamedicId: null } : {}),
           ...(excludedDriverIds.length > 0 ? { id: { notIn: excludedDriverIds } } : {}),
         },
         select: { id: true, phone: true, name: true, locationLat: true, locationLng: true },
