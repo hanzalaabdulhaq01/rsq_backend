@@ -20,13 +20,14 @@ import { DriverProfilesModule } from './modules/driver-profiles/driver-profiles.
 import { AdminStatsModule } from './modules/admin-stats/admin-stats.module';
 import { LocationsModule } from './modules/locations/locations.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { LanguageModule } from './modules/language/language.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'admin'),
       serveRoot: '/admin',
     }),
-    ConfigModule, CommonModule, AuthModule, UsersModule, OrganizationsModule, AmbulancesModule, RideRequestsModule, DispatchModule, TrackingModule, ChatsModule, AdminActionsModule, DriverPerformanceModule, ParamedicProfilesModule, DriverProfilesModule, AdminStatsModule, LocationsModule, NotificationsModule],
+    ConfigModule, CommonModule, AuthModule, UsersModule, OrganizationsModule, AmbulancesModule, RideRequestsModule, DispatchModule, TrackingModule, ChatsModule, AdminActionsModule, DriverPerformanceModule, ParamedicProfilesModule, DriverProfilesModule, AdminStatsModule, LocationsModule, NotificationsModule, LanguageModule],
   controllers: [AppController],
   providers: [AppService],
 })
