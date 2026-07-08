@@ -6,6 +6,7 @@ import {
   MinLength,
   IsBoolean,
   IsNumber,
+  Matches,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
@@ -25,6 +26,9 @@ export class UpdateUserDto {
   @ApiPropertyOptional({ example: '+923001234567' })
   @IsOptional()
   @IsString()
+  @Matches(/^\+923\d{9}$/, {
+    message: 'Phone number must be a valid Pakistani mobile number (e.g. +923001234567)',
+  })
   phone?: string;
 
   @ApiPropertyOptional({ enum: Role })

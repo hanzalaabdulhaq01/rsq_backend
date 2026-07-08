@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, Logger } from '@nes
 import { Role, RideRequestStatus, AmbulanceStatus } from '@prisma/client';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { DispatchService } from '../dispatch/dispatch.service';
+import { DriverPerformanceService } from '../driver-performance/driver-performance.service';
 import { CreateRideRequestDto } from './dto/create-ride-request.dto';
 import { AdminCreateRideRequestDto } from './dto/admin-create-ride-request.dto';
 import { UpdateRideRequestStatusDto } from './dto/update-ride-request-status.dto';
@@ -20,6 +21,7 @@ export class RideRequestsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly dispatchService: DispatchService,
+    private readonly driverPerformanceService: DriverPerformanceService,
   ) {}
 
   private readonly include = {
@@ -208,11 +210,17 @@ export class RideRequestsService {
       });
     }
 
-    return this.prisma.rideRequest.update({
+    const updated = await this.prisma.rideRequest.update({
       where: { id },
       data,
       include: this.include,
     });
+
+    if (dto.status === RideRequestStatus.COMPLETED && updated.assignedDriverId) {
+      await this.driverPerformanceService.incrementRides(updated.assignedDriverId);
+    }
+
+    return updated;
   }
 
   async cancel(id: string, userId: string) {
@@ -364,11 +372,17 @@ export class RideRequestsService {
       throw new BadRequestException('Ride has already been rated');
     }
 
-    return this.prisma.rideRequest.update({
+    const updated = await this.prisma.rideRequest.update({
       where: { id },
       data: { userRating: rating },
       include: this.include,
     });
+
+    if (updated.assignedDriverId) {
+      await this.driverPerformanceService.addRating(updated.assignedDriverId, rating);
+    }
+
+    return updated;
   }
 
   /**
